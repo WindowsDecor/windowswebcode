@@ -3,9 +3,7 @@ const state={
     db:null,
 }
 module.exports.connect=function(done){
-    
-    //const url = "mongodb://localhost:27017";
-    //const dbname='canteen'
+
     const url=process.env.MONGODB_URL
     const dbname=process.env.MONGODB_DBNAME
     

@@ -127,6 +127,19 @@ function userlogout(event){
   })
 }
 
+function contactMessageOtpError(event){
+  event.preventDefault();
+  var link = event.currentTarget.href;
+  Swal.fire({
+    title: 'Note',
+    text: 'Unable to send otp to this Mobile No please contact admin:',
+    icon: 'success',
+    confirmButtonText: 'Ok'
+  }).then(()=>{
+    window.location = link
+  })
+}
+
 //=======================USER SECTION JAVASCRIPT END ===================================
 
 //=======================ADMIN SECTION JAVASCRIPT=======================================

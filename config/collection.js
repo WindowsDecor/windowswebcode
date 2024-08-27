@@ -11,8 +11,11 @@ module.exports={
     ABOUT_US_COLLECTION:"aboutus",
     BRANCH_COLLECTION:"branch",
     PRODUCT_COLLECTION:"products",
-    CUSTOMER_COLLECTION:"customer"
-
+    CUSTOMER_COLLECTION:"customer",
+    CONTACT_COLLECTION:"contact",
+    CREDIT_BOOK_COLLECTION:"credit-book",
+    DEALER_COLLECTION:"dealer",
+    MONTHLY_SQUARE_FEET:"monthlySquareFeet"
 }
 
 

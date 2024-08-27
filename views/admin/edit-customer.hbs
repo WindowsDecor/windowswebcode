@@ -16,36 +16,40 @@
                         </div>
                         <div class="card-content">
                             <div class="card-body">
-                                <form method="POST" enctype="multipart/form-data" action="/admin/add-customer"
+                                <form method="POST" enctype="multipart/form-data" action="/admin/edit-customer/{{customer._id}}"
                                     class="form">
                                     <div class="row">
                                         <div class="col-md-6 col-12">
                                             <div class="form-group">
                                                 <label for="">Customer Name</label>
-                                                <input type="text" class="form-control" id="" name="name" required />
+                                                <input type="text" class="form-control" id="" name="name" required
+                                                    value="{{customer.name}}" />
                                             </div>
                                         </div>
                                         <div class="col-md-6 col-12">
                                             <div class="form-group">
                                                 <label for="">Customer Mobile No:</label>
-                                                <input type="number" class="form-control" id="" name="mobile" required />
+                                                <input type="number" class="form-control" id="" name="mobile" required
+                                                    value="{{customer.mobile}}" />
                                             </div>
                                         </div>
 
                                         <div class="form-group mb-3">
                                             <label for="exampleFormControlTextarea1" class="form-label">Address:</label>
                                             <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
-                                                name="address" required></textarea>
+                                                name="address" required >{{customer.address}}</textarea>
                                         </div>
 
                                         <div class="form-group">
                                             <label for="">Place</label>
-                                            <input type="text" class="form-control" id="" name="place" required />
+                                            <input type="text" class="form-control" id="" name="place" required
+                                                value="{{customer.place}}" />
                                         </div>
                                         <div class="form-group">
                                             <label for="">Customer Type</label>
                                             <select class="form-control" name="customerType" id="">
-
+                                                <option value="{{customer.customerType}}">{{customer.customerType}}
+                                                </option>
                                                 <option value="Designer">Designer</option>
                                                 <option value="Casual Customer">Casual Customer</option>
                                             </select>
@@ -54,7 +58,7 @@
                                             <label for="exampleFormControlTextarea1"
                                                 class="form-label">Products:</label>
                                             <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
-                                                name="products" required></textarea>
+                                                name="products" required >{{customer.products}}</textarea>
                                         </div>
                                         {{!-- <div class="form-group">
                                             <label for="">Category</label>
@@ -66,18 +70,19 @@
                                         </div> --}}
                                         <div class="form-group">
                                             <label for="">Branch Visted</label>
-                                            <input type="text" class="form-control" id="" name="branchVisited"
-                                                required />
+                                            <input type="text" class="form-control" id="" name="branchVisited" required
+                                                value="{{customer.branchVisited}}" />
                                         </div>
                                         <div class="form-group">
                                             <label for="">Total Purchase Amount</label>
                                             <input type="number" class="form-control" id="" name="totalAmount"
-                                                paymentDate />
+                                                value="{{customer.totalAmount}}" />
                                         </div>
                                         <div class="form-group">
                                             <label for="">Payment Mode</label>
                                             <select class="form-control" name="paymentMode" id="">
-
+                                                <option value="{{customer.paymentMode}}">{{customer.paymentMode}}
+                                                </option>
                                                 <option value="Not Recived">Not Recived</option>
                                                 <option value="Gpay">Gpay</option>
                                                 <option value="Cash">Cash</option>
@@ -87,34 +92,34 @@
                                         <div class="form-group">
                                             <label for="branchVisitedDate">Branch visited Date</label>
                                             <input type="date" class="form-control" id="branchVisitedDate"
-                                                name="branchVisitedDate" />
+                                                name="branchVisitedDate" value="{{customer.branchVisitedDate}}" />
                                         </div>
                                         <div class="form-group">
                                             <label for="installationDate">Installation Date</label>
                                             <input type="date" class="form-control" id="installationDate"
-                                                name="installationDate" />
+                                                name="installationDate" value="{{customer.installationDate}}" />
                                         </div>
                                         <div class="form-group">
                                             <label for="paymentDate">Payment Date</label>
-                                            <input type="date" class="form-control" id="paymentDate"
-                                                name="paymentDate" />
+                                            <input type="date" class="form-control" id="paymentDate" name="paymentDate"
+                                                value="{{customer.paymentDate}}" />
                                         </div>
                                         <div class="form-group">
                                             <label for="">Customer review</label>
                                             <select class="form-control" name="rating" id="">
-
+                                                <option value="{{customer.rating}}">{{customer.rating}}</option>
                                                 <option value="1">1</option>
                                                 <option value="2">2</option>
                                                 <option value="3">3</option>
                                                 <option value="4">4</option>
                                                 <option value="5">5</option>
-                                                 <option value="NA">NA</option>
+                                                <option value="5">NA</option>
 
                                             </select>
                                         </div>
-                                           <div class="form-group">
-                                        <button type="submit" class="btn btn-primary">Submit</button>
-                                    </div>
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                        </div>
                                     </div>
                                 </form>
                             </div>

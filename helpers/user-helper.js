@@ -14,9 +14,9 @@ module.exports = {
   //==============================User Login Section===========================================================
   doSignup: (userData) => {
     return new Promise(async (resolve, reject) => {
-      let emailExist = await db.get().collection(collections.USER_COLLECTION).findOne({ email: userData.email })
-      if (emailExist) {
-        resolve({ emailExist })
+      let mobileExist = await db.get().collection(collections.USER_COLLECTION).findOne({ mobile: userData.mobile })
+      if (mobileExist) {
+        resolve({ mobileExist })
       } else {
         userData.password = await bcrypt.hash(userData.password, 10);
         userData.blockuser = false
@@ -31,7 +31,7 @@ module.exports = {
   doLogin: (userData) => {
     return new Promise(async (resolve, reject) => {
       let response = {};
-      let user = await db.get().collection(collections.USER_COLLECTION).findOne({ email: userData.email });
+      let user = await db.get().collection(collections.USER_COLLECTION).findOne({ mobile: userData.mobile });
       if (user) {
         bcrypt.compare(userData.password, user.password).then((status) => {
           if (status) {
@@ -257,7 +257,7 @@ module.exports = {
       let orderObj = {
         deliveryDetails: {
           name: order.name,
-          email: order.email,
+          mobile: order.mobile,
           save: order.save
         },
         userId: objectId(order._id),
@@ -364,7 +364,7 @@ module.exports = {
   //Getting user details using mobile numbers 
   getMobileDetails: (mobileNumber) => {
     return new Promise(async (resolve, reject) => {
-      let user = await db.get().collection(collections.USER_COLLECTION).findOne({ mobile1: mobileNumber })
+      let user = await db.get().collection(collections.USER_COLLECTION).findOne({ mobile: mobileNumber })
       if (user) {
         resolve(user)
       } else {
@@ -380,4 +380,10 @@ module.exports = {
       resolve(search);
     });
   },
+  addContact: (contact) => {
+    return new Promise(async (resolve, reject) => {
+       let data = await db.get().collection(collections.CONTACT_COLLECTION).insertOne(contact);
+       resolve(data.ops[0]._id);
+    })
+ },
 }

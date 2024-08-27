@@ -25,6 +25,27 @@ const verifyLogin = (req, res, next) => {
   }
 }
 
+router.get('/signup', (req, res) => {
+  mobileExist = req.session.mobileExist
+  res.render('user/signup', { user: true, mobileExist })
+  req.session.mobileExist = false
+})
+
+router.post('/signup', (req, res) => {
+  UserHelper.doSignup(req.body).then((response) => {
+    //console.log(response.emailExist);
+    if (response.mobileExist) {
+      console.log("mobile exit")
+      req.session.mobileExist = "With this mobile number, an account already exists. For more information, please contact the administrator!";
+      res.redirect('/signup')
+    } else {
+      req.session.user = response;
+      req.session.logedIn = true;
+      res.redirect('/')
+    }
+  })
+})
+
 
 router.get('/login', async (req, res) => {
   let allCategory = await adminHelper.getALLCategory()
@@ -38,25 +59,8 @@ router.get('/login', async (req, res) => {
   }
 })
 
-router.get('/signup', (req, res) => {
-  emailExist = req.session.emailExist
-  res.render('user/signup', { user: true, emailExist })
-  req.session.emailExist = false
-})
 
-router.post('/signup', (req, res) => {
-  UserHelper.doSignup(req.body).then((response) => {
-    //console.log(response.emailExist);
-    if (response.emailExist) {
-      req.session.emailExist = "Email is already Exist!!!";
-      res.redirect('/signup')
-    } else {
-      req.session.user = response;
-      req.session.logedIn = true;
-      res.redirect('/')
-    }
-  })
-})
+
 
 router.post('/login', (req, res) => {
   UserHelper.doLogin(req.body).then((response) => {
@@ -121,35 +125,6 @@ router.post('/mobile-number', (req, res) => {
   })
 })
 
-router.post('/mobile-number1', (req, res) => {
-  let mobileNo = req.body.mobile
-  userHelper.getMobileDetails(mobileNo).then((user) => {
-    if (user) {
-      if (user.blockuser === false) {
-        client.verify.services(verificationToken).verifications.create({
-          to: `+91${req.body.mobile}`,
-          channel: "call"
-        }).then((resp) => {
-          req.session.mobileNumber = resp.to
-          res.redirect('/otp-verification')
-        }).catch((err) => {
-          console.log(err)
-        })
-      }
-      else {
-        req.session.accountBlocked = true
-        res.redirect('/mobile-number')
-        console.log("account is blocked")
-      }
-
-    } else {
-      req.session.noUser = true
-      res.redirect('/mobile-number')
-      console.log("No user found111111")
-    }
-
-  })
-})
 
 
 router.get('/otp-verification', async (req, res) => {
@@ -164,7 +139,6 @@ router.get('/otp-verification', async (req, res) => {
 })
 router.post('/otp-verification', (req, res) => {
   let otp = req.body.otp
-  console.log(otp)
   let number = req.session.mobileNumber
   client.verify
     .services(verificationToken)
@@ -191,6 +165,7 @@ router.post('/otp-verification', (req, res) => {
       res.redirect('/otp-verification')
     })
 })
+//=========================
 router.get("/change-password", verifyLogin, async (req, res) => {
   let cartCount = null
   let allCategory = await adminHelper.getALLCategory()
@@ -402,4 +377,87 @@ router.get('/about', async (req, res) => {
   let allCategory = await adminHelper.getALLCategory()
   res.render('user/about', { user: true, aboutUs, branch ,allCategory})
 })
+
+// router.post('/add-contact', function(req, res) {
+//   userHelper.addContact(req.body).then((id) => {
+//       res.redirect('/about');
+//   }).catch((err) => {
+//       console.error("Error in adding contact Details:", err);
+//       res.redirect('/about'); 
+//   });
+// });
+
+router.post('/add-contact', function(req, res) {
+
+  req.session.mobileNumber = req.body.mobile;
+  req.session.body=req.body
+  // Send OTP via Twilio
+  client.verify.services(verificationToken)
+    .verifications
+    .create({
+      to: `+91${req.body.mobile}`,
+      channel: "sms"
+    })
+    .then((resp) => {
+      req.session.mobileNumber = resp.to
+      res.redirect('/otp-verification-contact');
+    })
+    .catch((err) => {
+      console.error("Error sending OTP:", err);
+      contactMessageOtpError();
+      res.redirect('/about'); 
+    });
+});
+
+
+router.get('/otp-verification-contact', async (req, res) => {
+  // Retrieve mobile number from session
+  let mobileNumber = req.session.mobileNumber;
+
+  // Render OTP verification page
+  res.render('user/otp-verification-contact', { user: true, mobileNumber, invalidOtp: req.session.invalidOtp });
+
+  // Reset invalidOtp session variable after rendering the page
+  req.session.invalidOtp = false;
+});
+
+
+router.post('/otp-verification-contact', (req, res) => {
+  let otp = req.body.otp;
+  let number = req.session.mobileNumber;
+  let body=req.session.body;
+  // Perform OTP verification using the Twilio client
+  client.verify.services(verificationToken)
+    .verificationChecks
+    .create({
+      to: number,
+      code: otp
+    })
+    .then((verification_check) => {
+      if (verification_check.valid) {
+        // OTP is valid, now add contact
+        userHelper.addContact(body).then((id) => {
+          // Clear mobileNumber from session after successful addition
+          req.session.mobileNumber = null; // Reset mobileNumber in session
+          req.req.session.body=null // Reset body in session
+          res.redirect('/about');
+        }).catch((err) => {
+          console.error("Error in adding contact Details:", err);
+          res.redirect('/about');
+        });
+      } else {
+        // Invalid OTP
+        console.log("OTP entered is not valid");
+        req.session.invalidOtp = true;
+        res.redirect('/otp-verification-contact');
+      }
+    })
+    .catch((err) => {
+      // Error during OTP verification
+      console.error("Error verifying OTP:", err);
+      req.session.invalidOtp = true;
+      res.redirect('/otp-verification-contact');
+    });
+});
+
 module.exports = router;

@@ -1,4 +1,4 @@
-<div class="content">
+<div class="content" style="height: 60vh;">
     <div class="container">
       <div class="row">
         <div class="col-md-6">
@@ -16,16 +16,16 @@
                 <input type="text" name="name" class="form-control" id="" required>
               </div>
               <div class="form-group first">
-                <label for="">Email</label>
-                <input type="email" name="email" class="form-control" id="" required>
+                <label for="">Mobile</label>
+                <input type="tel" name="mobile" pattern="[0-9]{10}" title="Mobile number must be 10 digits" class="form-control" id="" required>
               </div>
               <div class="form-group last mb-4">
                 <label for="">Password</label>
                 <input type="password" name="password" class="form-control" id="" pattern=".{8,16}" title="Password must be 8 characters"required>
               </div>
-               {{#if emailExist}}
+               {{#if mobileExist}}
               <div class="form-group last mb-4">
-                <label for="" style="color: #f10707;">{{emailExist}}</label>
+                <label for="" style="color: #f10707;">{{mobileExist}}</label>
               </div>
               {{/if}}
               <input type="submit" value="Signup" class="btn btn-block btn-primary">

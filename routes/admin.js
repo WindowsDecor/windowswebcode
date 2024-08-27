@@ -524,13 +524,14 @@ router.get('/edit-product/:id',verifyLogin,async(req,res)=>{
 router.post('/edit-product/:id', (req, res) => {
   adminHelper.updateProduct(req.params.id, req.body).then((response) => {
     if (req.files) {
-      if (req.files.image) {
-        let image = req.files.image;
+      if (req.files.image1) {
+        let image = req.files.image1;
+        console.log("===========================")
         image.mv('./public/images/' + req.params.id + 'first.jpg');
       }
       if (req.files.image2) {
         let image2 = req.files.image2;
-        image2.mv('./public/images/' + req.params.id + 'second.jpg');
+        image2.mv('./public/images/' + req.params.id + '  second.jpg');
       }
       if (req.files.image3) {
         let image3 = req.files.image3;
@@ -558,10 +559,263 @@ router.get("/all-customers", verifyLogin,async(req, res) => {
   res.render('admin/all-customers',{customers,admin:true})
 })
 });
+
 router.get('/add-customer',verifyLogin,async function(req,res){
-  allCategory=await adminHelper.getALLCategory()
-  res.render('admin/add-customer',{admin:true,allCategory})
+  res.render('admin/add-customer',{admin:true})
+
+
+  router.post('/add-customer', function(req, res) {
+    adminHelper.addCustomer(req.body).then((id) => {
+        res.redirect('/admin/all-customers');
+    }).catch((err) => {
+        console.error("Error adding product:", err);
+        res.redirect('/admin/add-customer'); 
+    });
+  });
 })
+
+
+router.get('/delete-customer/:id', async (req, res) => {
+  let customerId = req.params.id;
+
+  try {
+      // Ensure product exists before attempting to delete
+      const customer = await adminHelper.deleteCustomer(customerId);
+      if (!customer) {
+        res.redirect('/admin/all-customers'); 
+      }
+
+      res.redirect('/admin/all-customers'); 
+  } catch (error) {
+      res.redirect('/admin/all-customers'); 
+  }
+});
+
+router.get('/edit-customer/:id',verifyLogin,async(req,res)=>{
+  adminHelper.getCustomertDetails(req.params.id).then((customer)=>{
+    res.render('admin/edit-customer',{customer,admin:true});
+  })  
+})
+
+router.post('/edit-customer/:id', (req, res) => {
+  adminHelper.updateCustomerDetails(req.params.id, req.body).then((response) => {
+    res.redirect('/admin/all-customers');
+  }).catch((err) => {
+    console.error(err);
+    res.redirect('/admin/all-customers'); // Handle errors appropriately
+  });
+});
+
+
+/**Admin Customer section End */
+
+/**Admin credit book section  */
+router.get("/all-credit-books", verifyLogin,async(req, res) => {
+  adminHelper.getALLCreditBooks().then((creditBooks)=>{
+  res.render('admin/all-credit-books',{creditBooks,admin:true})
+})
+});
+
+router.get('/add-credit-book',verifyLogin,async function(req,res){
+  res.render('admin/add-credit-book',{admin:true})
+
+
+router.post('/add-credit-book', function(req, res) {
+    adminHelper.addCreditBook(req.body).then((id) => {
+        res.redirect('/admin/all-credit-books');
+    }).catch((err) => {
+        console.error("Error adding credit book:", err);
+        res.redirect('/admin/all-credit-books');
+    });
+  });
+})
+
+
+router.get('/delete-credit-book/:id', async (req, res) => {
+  let creditBookId = req.params.id;
+
+  try {
+      // Ensure product exists before attempting to delete
+      const creditBook = await adminHelper.deleteCreditBook(creditBookId);
+      if (!creditBook) {
+        res.redirect('/admin/all-credit-books');
+      }
+
+      res.redirect('/admin/all-credit-books');
+  } catch (error) {
+    res.redirect('/admin/all-credit-books');
+  }
+});
+
+router.get('/edit-credit-book/:id',verifyLogin,async(req,res)=>{
+  adminHelper.getCreditBookDetails(req.params.id).then((creditBook)=>{
+    res.render('admin/edit-credit-book',{creditBook,admin:true});
+  })  
+})
+
+router.post('/edit-credit-book/:id', (req, res) => {
+  adminHelper.updateCreditBookDetails(req.params.id, req.body).then((response) => {
+    res.redirect('/admin/all-credit-books');
+  }).catch((err) => {
+    console.error(err);
+    res.redirect('/admin/all-credit-books');
+  });
+});
+/**Admin credit book section End */
+
+/**Admin Dealer details section  */
+router.get("/all-dealer-details", verifyLogin,async(req, res) => {
+  adminHelper.getALLDealerDetails().then((dealerDetails)=>{
+  res.render('admin/all-dealer-details',{dealerDetails,admin:true})
+})
+});
+
+router.get('/add-dealer-detail',verifyLogin,async function(req,res){
+  res.render('admin/add-dealer-detail',{admin:true})
+
+
+router.post('/add-dealer-detail', function(req, res) {
+    adminHelper.addDealerDetail(req.body).then((id) => {
+        res.redirect('/admin/all-dealer-details');
+    }).catch((err) => {
+        console.error("Error adding dealer details:", err);
+        res.redirect('/admin/all-dealer-details');
+    });
+  });
+})
+
+
+router.get('/delete-dealer-details/:id', async (req, res) => {
+  let dealerDetailsId = req.params.id;
+
+  try {
+      // Ensure product exists before attempting to delete
+      const dealerDetail = await adminHelper.deleteDealerDetail(dealerDetailsId);
+      if (!creditBook) {
+        res.redirect('/admin/all-dealer-details');
+      }
+
+      res.redirect('/admin/all-dealer-details');
+  } catch (error) {
+    res.redirect('/admin/all-dealer-details');
+  }
+});
+
+router.get('/edit-dealer-detail/:id',verifyLogin,async(req,res)=>{
+  adminHelper.getDealerDetail(req.params.id).then((dealerDetail)=>{
+    res.render('admin/edit-dealer-detail',{dealerDetail,admin:true});
+  })  
+})
+
+router.post('/edit-dealer-detail/:id', (req, res) => {
+  adminHelper.updateDealerDetail(req.params.id, req.body).then((response) => {
+    res.redirect('/admin/all-dealer-details')
+  }).catch((err) => {
+    console.error(err);
+    res.redirect('/admin/all-dealer-details')
+  });
+});
+/**Admin Dealer section End */
+
+/**Admin monthly square feet details section  */
+router.get("/all-monthly-square-feet", verifyLogin,async(req, res) => {
+  adminHelper.getALLMonthlySquareFeet().then((monthlySquareFeet)=>{
+  res.render('admin/all-monthly-square-feet',{monthlySquareFeet,admin:true})
+})
+});
+
+router.get('/add-monthly-square-feet',verifyLogin,async function(req,res){
+  res.render('admin/add-monthly-square-feet',{admin:true})
+
+
+router.post('/add-monthly-square-feet', function(req, res) {
+    adminHelper.addMonthlySquareFeet(req.body).then((id) => {
+        res.redirect('/admin/all-monthly-square-feet');
+    }).catch((err) => {
+        console.error("Error adding Monthly Square Feet:", err);
+        res.redirect('/admin/all-monthly-square-feet');
+    });
+  });
+})
+
+
+router.get('/delete-monthly-square-feet/:id', async (req, res) => {
+  let monthlySquareFeetId = req.params.id;
+
+  try {
+      // Ensure product exists before attempting to delete
+      const dealerDetail = await adminHelper.deleteMonthlySquareFeet(monthlySquareFeetId);
+      if (!dealerDetail) {
+        res.redirect('/admin/all-monthly-square-feet');
+      }
+
+      res.redirect('/admin/all-monthly-square-feet');
+  } catch (error) {
+    res.redirect('/admin/all-monthly-square-feet');
+  }
+});
+
+router.get('/edit-monthly-square-feet/:id',verifyLogin,async(req,res)=>{
+  adminHelper.getMonthlySquareFeet(req.params.id).then((monthlySquareFeet)=>{
+    res.render('admin/edit-monthly-square-feet',{monthlySquareFeet,admin:true});
+  })  
+})
+
+router.post('/edit-monthly-square-feet/:id', (req, res) => {
+  adminHelper.updateMonthlySquareFeet(req.params.id, req.body).then((response) => {
+    res.redirect('/admin/all-monthly-square-feet');
+  }).catch((err) => {
+    console.error(err);
+    res.redirect('/admin/all-monthly-square-feet');
+  });
+});
+/**Admin monthly square feet section End */
+
+/**Admin Contacted section Start */
+router.get("/all-contacts", verifyLogin,async(req, res) => {
+  adminHelper.getALLContacts().then((contacts)=>{
+  res.render('admin/all-contacts',{contacts,admin:true})
+})
+});
+
+router.get('/delete-contact/:id', async (req, res) => {
+  let contactId = req.params.id;
+
+  try {
+      // Ensure product exists before attempting to delete
+      const contact = await adminHelper.deleteContact(contactId);
+      if (!contact) {
+        res.redirect('/admin/all-contacts'); 
+      }
+
+      res.redirect('/admin/all-contacts'); 
+  } catch (error) {
+    res.redirect('/admin/all-contacts'); 
+  }
+});
+
+/**Admin Contacted section End */
+
+/**Admin Cart section Start */
+router.get('/view-carts',verifyLogin,async(req,res)=>{
+  carts=await adminHelper.getALLCarts()
+  res.render('admin/view-carts',{carts,admin:true})
+})
+router.get('/view-cart-items/:id',verifyLogin,async(req,res)=>{
+  cartProductDetails=await adminHelper.getOrderproduct(req.params.id);
+  res.render('admin/view-cart-items',{admin:true,cartProductDetails})
+})
+
+router.get('/delete-product-cart/:id', verifyLogin, (req, res) => {
+  let cartId = req.params.id;
+  adminHelper.deleteCart(orderId).then(() => {
+      res.redirect('/admin/view-carts');
+  }).catch((err) => {
+      console.error("Error deleting orders:", err);
+      res.redirect('/admin/view-carts'); // or handle error appropriately
+  });
+});
+/**Admin Cart section End */
 
 //====================================================================================================
 

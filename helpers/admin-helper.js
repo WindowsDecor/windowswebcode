@@ -88,6 +88,10 @@ module.exports = {
       })
 
    },
+
+    //Banner Section End
+
+
    //About Us section
 
    addAboutUsDetails: (aboutUs) => {
@@ -266,6 +270,8 @@ module.exports = {
       })
 
    },
+
+   //Product section
    addProduct: (product) => {
       return new Promise(async (resolve, reject) => {
          let data = await db.get().collection(collections.PRODUCT_COLLECTION).insertOne(product);
@@ -328,7 +334,9 @@ module.exports = {
          resolve(relatedProducts)
       })
    }
+   //Product section End
 
+   // User Section
    , getALLusers: () => {
       return new Promise(async (resolve, reject) => {
          let usersList = await db.get().collection(collections.USER_COLLECTION).find().toArray()
@@ -389,6 +397,8 @@ module.exports = {
             })
       })
    }
+   // User Section End
+   
    , getALLOrders: () => {
       return new Promise(async (resolve, reject) => {
          let orders = await db.get().collection(collections.ORDER_COLLECTION).find().toArray()
@@ -621,7 +631,7 @@ module.exports = {
 
    addCustomer: (customer) => {
       return new Promise(async (resolve, reject) => {
-         let data = await db.get().collection(collections.CUSTOMER_COLLECTIONL).insertOne(customer);
+         let data = await db.get().collection(collections.CUSTOMER_COLLECTION).insertOne(customer);
          resolve(data.ops[0]._id);
       })
    },
@@ -642,31 +652,138 @@ module.exports = {
    },
    getCustomertDetails: (customerId) => {
       return new Promise(async (resolve, reject) => {
-         await db.get().collection(collections.CART_COLLECTION).findOne({ _id: objectId(customerId) }).then((customer) => {
+         await db.get().collection(collections.CUSTOMER_COLLECTION).findOne({ _id: objectId(customerId) }).then((customer) => {
             resolve(customer)
          })
       })
    },
    updateCustomerDetails: (customerId, customerDetails) => {
       return new Promise(async (resolve, reject) => {
-         await db.get().collection(collections.CUSTOMER_COLLECTION).updateOne({ _id: objectId(customerId) }, {
-            $set: {
-               name: customerDetails.name,
-               brand: customerDetails.brand,
-               description: customerDetails.description,
-               price: customerDetails.price,
-               category: customerDetails.category,
-               offer: customerDetails.offer,
-               size: customerDetails.size,
-               colour: customerDetails.colour,
-               design: customerDetails.design
-            }
-         }).then((response) => {
+         const updateFields = { $set: { ...customerDetails } };
+         await db.get().collection(collections.CUSTOMER_COLLECTION).updateOne({ _id: objectId(customerId) },
+         updateFields
+         ).then((response) => {
             resolve(response)
          })
       })
-
    },
+   //credit-book
+   addCreditBook: (creditBook) => {
+      return new Promise(async (resolve, reject) => {
+         let data = await db.get().collection(collections.CREDIT_BOOK_COLLECTION).insertOne(creditBook);
+         resolve(data.ops[0]._id);
+      })
+   },
+   getALLCreditBooks: () => {
+      return new Promise(async (resolve, reject) => {
+         let creditBooks = await db.get().collection(collections.CREDIT_BOOK_COLLECTION).find().toArray()
+         resolve(creditBooks)
+      })
+   },
+   deleteCreditBook : (creditBookId) => {
+      return new Promise((resolve, reject) => {
+         db.get().collection(collections.CREDIT_BOOK_COLLECTION).removeOne({ _id: objectId(creditBookId) }).then((response) => {
+            resolve(response);
+         })
+
+      })
+      
+   },
+   getCreditBookDetails: (creditBookId) => {
+      return new Promise(async (resolve, reject) => {
+         await db.get().collection(collections.CREDIT_BOOK_COLLECTION).findOne({ _id: objectId(creditBookId) }).then((creditBook) => {
+            resolve(creditBook)
+         })
+      })
+   },
+   updateCreditBookDetails: (creditBookId, creditBookDetails) => {
+      return new Promise(async (resolve, reject) => {
+         const updateFields = { $set: { ...creditBookDetails } };
+         await db.get().collection(collections.CREDIT_BOOK_COLLECTION).updateOne({ _id: objectId(creditBookId) },
+         updateFields
+         ).then((response) => {
+            resolve(response)
+         })
+      })
+   },
+     //Dealer Section
+     addDealerDetail: (dealerDetail) => {
+      return new Promise(async (resolve, reject) => {
+         let data = await db.get().collection(collections.DEALER_COLLECTION).insertOne(dealerDetail);
+         resolve(data.ops[0]._id);
+      })
+   },
+   getALLDealerDetails: () => {
+      return new Promise(async (resolve, reject) => {
+         let dealerDetails = await db.get().collection(collections.DEALER_COLLECTION).find().toArray()
+         resolve(dealerDetails)
+      })
+   },
+   deleteDealerDetail : (dealerDetailId) => {
+      return new Promise((resolve, reject) => {
+         db.get().collection(collections.DEALER_COLLECTION).removeOne({ _id: objectId(dealerDetailId) }).then((response) => {
+            resolve(response);
+         })
+
+      })
+      
+   },
+   getDealerDetail: (dealerDetailId) => {
+      return new Promise(async (resolve, reject) => {
+         await db.get().collection(collections.DEALER_COLLECTION).findOne({ _id: objectId(dealerDetailId) }).then((dealerDetail) => {
+            resolve(dealerDetail)
+         })
+      })
+   },
+   updateDealerDetail: (dealerDetailId, dealerDetail) => {
+      return new Promise(async (resolve, reject) => {
+         const updateFields = { $set: { ...dealerDetail } };
+         await db.get().collection(collections.DEALER_COLLECTION).updateOne({ _id: objectId(dealerDetailId) },
+         updateFields
+         ).then((response) => {
+            resolve(response)
+         })
+      })
+   },
+   //Monthly Square Feet Section
+    addMonthlySquareFeet: (monthlySquareFeet) => {
+         return new Promise(async (resolve, reject) => {
+            let data = await db.get().collection(collections.MONTHLY_SQUARE_FEET).insertOne(monthlySquareFeet);
+            resolve(data.ops[0]._id);
+         })
+      },
+      getALLMonthlySquareFeet: () => {
+         return new Promise(async (resolve, reject) => {
+            let monthlySquareFeet = await db.get().collection(collections.MONTHLY_SQUARE_FEET).find().toArray()
+            resolve(monthlySquareFeet)
+         })
+      },
+      deleteMonthlySquareFeet : (monthlySquareFeetId) => {
+         return new Promise((resolve, reject) => {
+            db.get().collection(collections.MONTHLY_SQUARE_FEET).removeOne({ _id: objectId(monthlySquareFeetId) }).then((response) => {
+               resolve(response);
+            })
+   
+         })
+         
+      },
+      getMonthlySquareFeet: (monthlySquareFeetId) => {
+         return new Promise(async (resolve, reject) => {
+            await db.get().collection(collections.MONTHLY_SQUARE_FEET).findOne({ _id: objectId(monthlySquareFeetId) }).then((monthlySquareFeet) => {
+               resolve(monthlySquareFeet)
+            })
+         })
+      },
+      updateMonthlySquareFeet: (monthlySquareFeetId, monthlySquareFeet) => {
+         return new Promise(async (resolve, reject) => {
+            const updateFields = { $set: { ...monthlySquareFeet } };
+            await db.get().collection(collections.MONTHLY_SQUARE_FEET).updateOne({ _id: objectId(monthlySquareFeetId) },
+            updateFields
+            ).then((response) => {
+               resolve(response)
+            })
+         })
+      },
   //get product detail based on singele order id
   getOrderproduct: (orderId) => {
    return new Promise(async (resolve) => {
@@ -704,6 +821,69 @@ module.exports = {
  deleteOrder: (orderId) => {
    return new Promise((resolve, reject) => {
       db.get().collection(collections.ORDER_COLLECTION).removeOne({ _id: objectId(orderId) }).then((response) => {
+         resolve(response);
+      })
+
+   })
+},
+
+getALLContacts: () => {
+   return new Promise(async (resolve, reject) => {
+      let contacts = await db.get().collection(collections.CONTACT_COLLECTION).find().toArray()
+      resolve(contacts)
+   })
+},
+deleteContact : (contactId) => {
+   return new Promise((resolve, reject) => {
+      db.get().collection(collections.CONTACT_COLLECTION).removeOne({ _id: objectId(contactId) }).then((response) => {
+         resolve(response);
+      })
+
+   })
+   
+},
+ getALLCarts: () => {
+   return new Promise(async (resolve, reject) => {
+      let carts = await db.get().collection(collections.CART_COLLECTION).find().toArray()
+      resolve(carts)
+   })
+},
+getCartproduct: (cartId) => {
+   return new Promise(async (resolve) => {
+     // console.log(orderId)
+     let cartProductItems = await db.get().collection(collections.CART_COLLECTION).aggregate([{ $match: { _id: objectId(cartId) } },
+         {
+           $unwind: "$products",
+         },
+         {
+           $project: {
+             item: "$products.item",
+             quantity: "$products.quantity",
+           },
+         },
+         {
+           $lookup: {
+             from: collections.PRODUCT_COLLECTION,
+             localField: "item",
+             foreignField: "_id",
+             as: "productDetails",
+           },
+         },
+         {
+           $project: {
+             item: 1,
+             quantity: 1,
+             productDetails: { $arrayElemAt: ["$productDetails", 0] },
+           },
+         },
+       ]).toArray();
+     //console.log(OrderProductItems)
+     resolve(cartProductItems);
+   });
+ },
+ deleteCart: (cartId) => {
+   return new Promise((resolve, reject) => {
+      db.get().collection(collections.CART_COLLECTION).removeOne({ _id: objectId(cartId) }).then((response) => {
          resolve(response);
       })
 
